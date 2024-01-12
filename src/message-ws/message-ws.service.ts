@@ -5,7 +5,10 @@ import { User } from '../auth/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 
 interface ConnectedClient {
-    [id: string]: Socket;
+    [id: string]: {
+        socket: Socket,
+        user: User
+    };
 }
 
 @Injectable()
@@ -23,7 +26,10 @@ export class MessageWsService {
         if(!user) throw new Error('User not found');
         if(!user.isActive) throw new Error('User is not active');
 
-        this.connectedClients[client.id] = client;
+        this.connectedClients[client.id] = {
+            socket: client,
+            user
+        };
     }
 
     removeClient(clientId: string) {
