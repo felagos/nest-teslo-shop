@@ -5,10 +5,13 @@ type ServerMessage = {
     message: string
 }
 
-export const connectServer = () => {
-    const manager = new Manager('http://localhost:3000/socket.io/socket.io.js');
+export const connectServer = (jwtToken: string) => {
+    const manager = new Manager('http://localhost:3000/socket.io/socket.io.js', {
+        extraHeaders: {
+            Authorization: `Bearer ${jwtToken}`
+        }
+    });
     const socket = manager.socket('/');
-
     addListener(socket);
 };
 
