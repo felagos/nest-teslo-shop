@@ -9,12 +9,12 @@
     "prebuild": "rimraf dist",
     "build:server": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start:dev:server": "nest start --watch",
+    "start:server": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
-    "start:client": "cd ws-client && npm dev",
+    "start:client": "cd ws-client && npm run dev",
     "install:all" : "pnpm i && cd ws-client && pnpm i"
   },
   "dependencies": {
