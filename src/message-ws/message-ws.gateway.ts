@@ -24,14 +24,13 @@ export class MessageWsGateway implements OnGatewayConnection, OnGatewayDisconnec
 
     try {
       payload = this.jwtService.verify(token, { secret: this.configService.get('JWT_SECRET') });
-      this.wss.emit('clients-updated', this.messageWsService.getConnectedClients());
+      await this.messageWsService.registerClient(client, payload.id);
     } catch (error) {
       client.disconnect(true);
       return;
     }
 
-    await this.messageWsService.registerClient(client, payload.id);
-    console.log(`Clients connected: ${this.messageWsService.getTotalClients()}`);
+    this.wss.emit('clients-updated', this.messageWsService.getConnectedClients());
   }
 
   handleDisconnect(client: Socket) {
@@ -40,7 +39,8 @@ export class MessageWsGateway implements OnGatewayConnection, OnGatewayDisconnec
 
   @SubscribeMessage('message-from-client')
   onMessageFromClient(client: Socket, payload: NewMessageDto) {
-    client.emit('message-from-server', { fullName: 'Server', message: payload.message });
+    const user = this.messageWsService.getUserBySocketId(client.id);
+    client.emit('message-from-server', { fullName: user.fullName, message: payload.message });
     //client.broadcast.emit('message-from-server', { fullName: 'Server', message: payload.message });
     //this.wss.emit('message-from-server', { fullName: 'Server', message: payload.message });
   }
